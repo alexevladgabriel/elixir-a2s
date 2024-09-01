@@ -1,4 +1,16 @@
 defmodule A2S.Packet.Utils do
+  # Mutlipacket utils
+  def glue_packets(packets, acc \\ [])
+  def glue_packets([], acc), do: IO.iodata_to_binary(acc)
+
+  def glue_packets([{_multipacket_header, payload} | tail], acc) do
+    glue_packets(tail, [acc | payload])
+  end
+
+  def sort_multipacket(collected),
+    do: Enum.sort(collected, fn {%{index: a}, _}, {%{index: b}, _} -> a < b end)
+
+  # EDF parsing utils
   def parse_edf(<<>>), do: %{}
 
   def parse_edf(<<edf::8, data::bytes>>) do

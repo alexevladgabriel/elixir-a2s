@@ -1,6 +1,26 @@
 defmodule A2S.Packet do
+  import A2S.Packet.Utils
   @simple_header <<-1::signed-32-little>>
   @multipacket_header <<-2::signed-32-little>>
+
+  defmodule MultiPacket do
+    @moduledoc """
+    Struct representing a [multi-packet response header](https://developer.valvesoftware.com/wiki/Server_queries#Multi-packet_Response_Format).
+    """
+    defstruct [
+      :id,
+      :total,
+      :index,
+      :size
+    ]
+
+    @type t() :: %MultiPacket{
+            id: integer(),
+            total: byte(),
+            index: byte(),
+            size: integer()
+          }
+  end
 
   @type type() :: :simple | :multipacket
 
