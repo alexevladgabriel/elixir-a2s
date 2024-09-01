@@ -17,6 +17,7 @@ defmodule A2S.Requests.Info do
           visibility: :public | :private,
           vac: :secured | :unsecured | :unknown,
           # Extra Data Fields
+          mod: :half_life | :half_life_mod | :unknown | nil,
           gameport: :inet.port_number() | nil,
           steamid: integer() | nil,
           spectator_port: :inet.port_number() | nil,
@@ -41,6 +42,7 @@ defmodule A2S.Requests.Info do
     :vac,
     :version,
     # Extra Data Fields (Not guaranteed)
+    :mod,
     :gameport,
     :steamid,
     :spectator_port,
@@ -112,7 +114,48 @@ defmodule A2S.Requests.Info do
   end
 
   def parse_goldsrc_response(response) when is_binary(response) do
-    dbg("Parsing GoldSrc Engine Info Response")
+    {_address, data} = read_null_term_string(response)
+    {name, data} = read_null_term_string(data)
+    {map, data} = read_null_term_string(data)
+    {folder, data} = read_null_term_string(data)
+    {game, data} = read_null_term_string(data)
+
+    <<
+      players::8,
+      max_players::8,
+      protocol::8,
+      server_type::8,
+      environment::8,
+      visibility::8,
+      mod::8,
+      vac::8,
+      bots::8
+    >> = data
+
+    %Info{
+      protocol: protocol,
+      name: name,
+      map: map,
+      folder: folder,
+      game: game,
+      players: players,
+      max_players: max_players,
+      bots: bots,
+      server_type: parse_server_type(server_type),
+      environment: parse_environment(environment),
+      visibility: parse_visibility(visibility),
+      vac: parse_vac(vac),
+      version: nil,
+      gameport: nil,
+      steamid: nil,
+      spectator_port: nil,
+      spectator_name: nil,
+      keywords: nil,
+      gameid: nil,
+      # GoldSrc does not provide AppID
+      mod: parse_mod(mod),
+      appid: 0
+    }
   end
 
   defp parse_app_id(gameid, id) do
@@ -129,6 +172,14 @@ defmodule A2S.Requests.Info do
       ?d -> :dedicated
       ?l -> :non_dedicated
       ?p -> :proxy
+      _ -> :unknown
+    end
+  end
+
+  def parse_mod(mod) do
+    case mod do
+      0 -> :half_life
+      1 -> :half_life_mod
       _ -> :unknown
     end
   end
