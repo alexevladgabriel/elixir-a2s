@@ -1,6 +1,5 @@
 defmodule A2S.Statem do
   @moduledoc false
-  alias A2S.Socket
   alias A2S.Packet
 
   # A state machine process responsible for handling all A2S queries to a game server running at the given address.
