@@ -25,7 +25,8 @@ defmodule A2S.Requests do
     headers = [
       A2S.Requests.Info.get_info_source_header(),
       A2S.Requests.Info.get_info_goldsrc_header(),
-      A2S.Requests.Players.get_player_response_header()
+      A2S.Requests.Players.get_player_response_header(),
+      A2S.Requests.Rules.get_rules_response_header()
     ]
 
     case Enum.find_index(headers, fn x -> x === header end) do
@@ -37,6 +38,9 @@ defmodule A2S.Requests do
 
       2 ->
         {:players, &A2S.Requests.Players.parse/1}
+
+      3 ->
+        {:rules, &A2S.Requests.Rules.parse/1}
 
       nil ->
         raise A2S.Error,
