@@ -24,7 +24,12 @@ end
 
 ```elixir
 # target server
+<<<<<<< HEAD
 game_server = ~c"135.125.249.187:27015"
+=======
+game_server = ~c"216.52.148.47:27015"
+game_server = ~c"127.0.0.1:27015"
+>>>>>>> parent of 7551f01 (cleaning session)
 # timeout
 timeout = 3000
 # udp port (probably dont need to change this)
@@ -61,7 +66,10 @@ end
 
 :gen_udp.close(socket)
 ```
+<<<<<<< HEAD
 
 ```elixir
 
 ```
+=======
+>>>>>>> parent of 7551f01 (cleaning session)
