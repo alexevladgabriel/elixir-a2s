@@ -24,7 +24,8 @@ defmodule A2S.Requests do
   def parse_response(header) do
     headers = [
       A2S.Requests.Info.get_info_source_header(),
-      A2S.Requests.Info.get_info_goldsrc_header()
+      A2S.Requests.Info.get_info_goldsrc_header(),
+      A2S.Requests.Players.get_player_response_header()
     ]
 
     case Enum.find_index(headers, fn x -> x === header end) do
@@ -33,6 +34,9 @@ defmodule A2S.Requests do
 
       1 ->
         {:info, &A2S.Requests.Info.parse_goldsrc_response/1}
+
+      2 ->
+        {:players, &A2S.Requests.Players.parse/1}
 
       nil ->
         raise A2S.Error,

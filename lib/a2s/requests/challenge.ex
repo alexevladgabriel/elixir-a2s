@@ -32,7 +32,15 @@ defmodule A2S.Requests.Challenge do
   @spec sign(A2S.Requests.query(), binary()) :: binary()
   def sign(query, challenge) do
     packet = A2S.Requests.request(query)
-    <<packet <> challenge>>
+
+    case query do
+      :info ->
+        <<packet <> challenge>>
+
+      _ ->
+        <<_type::32, header::8, _rest::bytes>> = packet
+        A2S.Packet.create(:simple, header, challenge)
+    end
   end
 
   def get_challenge_header, do: @challenge_request_header

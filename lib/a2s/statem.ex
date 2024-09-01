@@ -68,6 +68,8 @@ defmodule A2S.Statem do
   # Received a reply to a query
   @impl :gen_statem
   def handle_event(:cast, packet, :await_challenge, data) do
+    dbg("Received a challenge response")
+
     %SocketState{
       address: address,
       query: query,
