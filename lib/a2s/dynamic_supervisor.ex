@@ -6,7 +6,7 @@ defmodule A2S.DynamicSupervisor do
 
   ## Initialization
 
-  @spec start_link(any) :: :ignore | {:error, any} | {:ok, pid}
+  @spec start_link(any) :: :ignore | {:ok, pid()} | {:error, term()}
   def start_link(opts) do
     name = Keyword.fetch!(opts, :name)
 
@@ -20,7 +20,7 @@ defmodule A2S.DynamicSupervisor do
 
   # Starts an `A2S.Statem` for the specified `address`.
   @spec start_child({:inet.ip_address(), :inet.port_number()}, term()) ::
-          :ignore | {:error, any} | {:ok, pid} | {:ok, pid, any}
+          :ignore | {:ok, pid} | {:ok, pid, any} | {:error, any}
 
   def start_child(address, client) do
     supervisor = A2S.Client.dynamic_supervisor_name(client)
